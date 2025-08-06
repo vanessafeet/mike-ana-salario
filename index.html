@@ -58,6 +58,16 @@
       border-radius: 6px;
       box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
+
+    .grafico-container {
+      width: 350px;
+      margin: 40px auto;
+      background-color: #ffffffcc;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -106,15 +116,50 @@
       <tr><td>Ana</td><td>3.00</td><td>Mike</td><td>3.00</td><td>08/3/2025</td></tr>
       <tr><td>Ana</td><td>5.00</td><td>Mike</td><td>5.00</td><td>08/4/2025</td></tr>
       <tr><td>Ana</td><td>6.00</td><td>Mike</td><td>6.00</td><td>08/5/2025</td></tr>
-
-
+      <tr><td>Ana</td><td>3.00</td><td>Mike</td><td>3.00</td><td>08/5/2025</td></tr>
+      <tr><td>Ana</td><td>5.00</td><td>Mike</td><td>5.00</td><td>08/5/2025</td></tr>
     </tbody>
   </table>
 
   <div class="resumen">
-    Ana Bellen: 120 DÓLARES<br>
-    Mike Rosales: 120 DÓLARES
+    Ana Bellen: 128 DÓLARES<br>
+    Mike Rosales: 128 DÓLARES
   </div>
+
+  <div class="grafico-container">
+    <h3>Distribución de Salarios</h3>
+    <canvas id="graficoSalarios"></canvas>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('graficoSalarios').getContext('2d');
+    const graficoSalarios = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Ana Bellen', 'Mike Rosales'],
+        datasets: [{
+          data: [128, 128],
+          backgroundColor: ['#FF6384', '#36A2EB'],
+          borderColor: ['#fff', '#fff'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          title: {
+            display: true,
+            text: 'Distribución de Salarios Totales'
+          }
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>
