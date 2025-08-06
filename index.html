@@ -59,13 +59,14 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
 
-    #grafico-container {
-      width: 90%;
+    .grafico-container {
+      width: 350px;
       margin: 40px auto;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: #ffffffcc;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      text-align: center;
     }
   </style>
 </head>
@@ -82,7 +83,7 @@
         <th>Fecha</th>
       </tr>
     </thead>
-    <tbody id="tabla-salarios">
+    <tbody>
       <tr><td>Ana</td><td>2.50</td><td>Mike</td><td>2.50</td><td>07/23/2025</td></tr>
       <tr><td>Ana</td><td>1</td><td>Mike</td><td>1</td><td>07/23/2025</td></tr>
       <tr><td>Ana</td><td>1</td><td>Mike</td><td>1</td><td>07/23/2025</td></tr>
@@ -117,76 +118,45 @@
       <tr><td>Ana</td><td>6.00</td><td>Mike</td><td>6.00</td><td>08/5/2025</td></tr>
       <tr><td>Ana</td><td>3.00</td><td>Mike</td><td>3.00</td><td>08/5/2025</td></tr>
       <tr><td>Ana</td><td>5.00</td><td>Mike</td><td>5.00</td><td>08/5/2025</td></tr>
+            <tr><td>Ana</td><td>20.00</td><td>Mike</td><td>20.00</td><td>08/5/2025</td></tr>
+
     </tbody>
   </table>
 
   <div class="resumen">
-    Ana Bellen: 128 DÓLARES<br>
-    Mike Rosales: 128 DÓLARES
+    Ana Bellen: 148 DÓLARES<br>
+    Mike Rosales: 148 DÓLARES
   </div>
 
-  <div id="grafico-container">
+  <div class="grafico-container">
+    <h3>Distribución de Salarios</h3>
     <canvas id="graficoSalarios"></canvas>
   </div>
 
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const filas = document.querySelectorAll("#tabla-salarios tr");
-    const datos = {};
-
-    filas.forEach(fila => {
-      const celdas = fila.querySelectorAll("td");
-      const fecha = celdas[4].textContent.trim();
-      const salarioAna = parseFloat(celdas[1].textContent);
-      const salarioMike = parseFloat(celdas[3].textContent);
-
-      if (!datos[fecha]) {
-        datos[fecha] = { Ana: 0, Mike: 0 };
-      }
-      datos[fecha].Ana += salarioAna;
-      datos[fecha].Mike += salarioMike;
-    });
-
-    const fechas = Object.keys(datos);
-    const salariosAna = fechas.map(fecha => datos[fecha].Ana);
-    const salariosMike = fechas.map(fecha => datos[fecha].Mike);
-
-    new Chart(document.getElementById("graficoSalarios"), {
-      type: 'bar',
+    const ctx = document.getElementById('graficoSalarios').getContext('2d');
+    const graficoSalarios = new Chart(ctx, {
+      type: 'pie',
       data: {
-        labels: fechas,
-        datasets: [
-          {
-            label: 'Ana Bellen',
-            backgroundColor: '#d63384', // rosado oscuro
-            data: salariosAna
-          },
-          {
-            label: 'Mike Rosales',
-            backgroundColor: '#0d6efd', // azul oscuro
-            data: salariosMike
-          }
-        ]
+        labels: ['Ana Bellen', 'Mike Rosales'],
+        datasets: [{
+          data: [148, 148],
+          backgroundColor: ['#FF6384', '#36A2EB'],
+          borderColor: ['#fff', '#fff'],
+          borderWidth: 2
+        }]
       },
       options: {
         responsive: true,
         plugins: {
+          legend: {
+            position: 'bottom'
+          },
           title: {
             display: true,
-            text: 'Salarios por Fecha',
-            font: { size: 20 }
-          },
-          legend: {
-            position: 'top'
-          }
-        },
-        animation: {
-          duration: 1200,
-          easing: 'easeOutBounce'
-        },
-        scales: {
-          y: {
-            beginAtZero: true
+            text: 'Distribución de Salarios Totales'
           }
         }
       }
