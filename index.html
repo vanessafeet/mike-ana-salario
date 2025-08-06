@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Lista de Empleados</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -59,14 +60,14 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
 
-    .grafico-container {
-      width: 350px;
-      margin: 40px auto;
-      background-color: #ffffffcc;
+    #chart-container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 50px auto;
+      background-color: rgba(255,255,255,0.95);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      text-align: center;
     }
   </style>
 </head>
@@ -83,7 +84,7 @@
         <th>Fecha</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="salarios-body">
       <tr><td>Ana</td><td>2.50</td><td>Mike</td><td>2.50</td><td>07/23/2025</td></tr>
       <tr><td>Ana</td><td>1</td><td>Mike</td><td>1</td><td>07/23/2025</td></tr>
       <tr><td>Ana</td><td>1</td><td>Mike</td><td>1</td><td>07/23/2025</td></tr>
@@ -126,40 +127,68 @@
     Mike Rosales: 128 DÓLARES
   </div>
 
-  <div class="grafico-container">
-    <h3>Distribución de Salarios</h3>
-    <canvas id="graficoSalarios"></canvas>
+  <div id="chart-container">
+    <canvas id="salaryChart"></canvas>
   </div>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const ctx = document.getElementById('graficoSalarios').getContext('2d');
-    const graficoSalarios = new Chart(ctx, {
-      type: 'pie',
+    const rows = document.querySelectorAll("#salarios-body tr");
+    const salaryByDate = {};
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll("td");
+      const date = cells[4].textContent.trim();
+      const ana = parseFloat(cells[1].textContent);
+      const mike = parseFloat(cells[3].textContent);
+
+      if (!salaryByDate[date]) {
+        salaryByDate[date] = { ana: 0, mike: 0 };
+      }
+
+      salaryByDate[date].ana += ana;
+      salaryByDate[date].mike += mike;
+    });
+
+    const labels = Object.keys(salaryByDate);
+    const anaData = labels.map(date => salaryByDate[date].ana);
+    const mikeData = labels.map(date => salaryByDate[date].mike);
+
+    new Chart(document.getElementById('salaryChart'), {
+      type: 'bar',
       data: {
-        labels: ['Ana Bellen', 'Mike Rosales'],
-        datasets: [{
-          data: [128, 128],
-          backgroundColor: ['#FF6384', '#36A2EB'],
-          borderColor: ['#fff', '#fff'],
-          borderWidth: 2
-        }]
+        labels,
+        datasets: [
+          {
+            label: 'Ana',
+            data: anaData,
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+          },
+          {
+            label: 'Mike',
+            data: mikeData,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          }
+        ]
       },
       options: {
         responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Salario Diario ($)'
+            }
+          }
+        },
         plugins: {
-          legend: {
-            position: 'bottom'
-          },
           title: {
             display: true,
-            text: 'Distribución de Salarios Totales'
+            text: 'Salarios por Fecha de Ana y Mike'
           }
         }
       }
     });
   </script>
-
 </body>
 </html>
